@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ECommPracticeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblCategory">
+          <Key>
+            <PropertyRef Name="CatID" />
+          </Key>
+          <Property Name="CatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CatName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblCompany">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+          </Key>
+          <Property Name="CompanyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblMyTemp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="Random" Type="bigint" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblOrderDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ProductPrice" Type="money" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblOrderMain">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblProduct">
+          <Key>
+            <PropertyRef Name="ProID" />
+          </Key>
+          <Property Name="ProID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProQuantity" Type="int" Nullable="false" />
+          <Property Name="ProPrice" Type="money" Nullable="false" />
+          <Property Name="ProImageName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CatID" Type="int" Nullable="false" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_tblMyTemp_tblProduct">
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="1" />
+          <End Role="tblMyTemp" Type="Self.tblMyTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblProduct">
+              <PropertyRef Name="ProID" />
+            </Principal>
+            <Dependent Role="tblMyTemp">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblOrderDetail_tblOrderMain">
+          <End Role="tblOrderMain" Type="Self.tblOrderMain" Multiplicity="1" />
+          <End Role="tblOrderDetail" Type="Self.tblOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblOrderMain">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="tblOrderDetail">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblProduct_tblCategory">
+          <End Role="tblCategory" Type="Self.tblCategory" Multiplicity="1" />
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCategory">
+              <PropertyRef Name="CatID" />
+            </Principal>
+            <Dependent Role="tblProduct">
+              <PropertyRef Name="CatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblProduct_tblCompany">
+          <End Role="tblCompany" Type="Self.tblCompany" Multiplicity="1" />
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCompany">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="tblProduct">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblProduct_tblProduct">
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="1" />
+          <End Role="tblProduct1" Type="Self.tblProduct" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblProduct">
+              <PropertyRef Name="ProID" />
+            </Principal>
+            <Dependent Role="tblProduct1">
+              <PropertyRef Name="ProID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="CartedProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="uniqueId" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="GetCategories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetTempsData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="random" Type="bigint" Mode="In" />
+        </Function>
+        <EntityContainer Name="ECommPracticeModelStoreContainer">
+          <EntitySet Name="tblCategory" EntityType="Self.tblCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblCompany" EntityType="Self.tblCompany" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMyTemp" EntityType="Self.tblMyTemp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblOrderDetail" EntityType="Self.tblOrderDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblOrderMain" EntityType="Self.tblOrderMain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblProduct" EntityType="Self.tblProduct" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tblMyTemp_tblProduct" Association="Self.FK_tblMyTemp_tblProduct">
+            <End Role="tblProduct" EntitySet="tblProduct" />
+            <End Role="tblMyTemp" EntitySet="tblMyTemp" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblOrderDetail_tblOrderMain" Association="Self.FK_tblOrderDetail_tblOrderMain">
+            <End Role="tblOrderMain" EntitySet="tblOrderMain" />
+            <End Role="tblOrderDetail" EntitySet="tblOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProduct_tblCategory" Association="Self.FK_tblProduct_tblCategory">
+            <End Role="tblCategory" EntitySet="tblCategory" />
+            <End Role="tblProduct" EntitySet="tblProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProduct_tblCompany" Association="Self.FK_tblProduct_tblCompany">
+            <End Role="tblCompany" EntitySet="tblCompany" />
+            <End Role="tblProduct" EntitySet="tblProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProduct_tblProduct" Association="Self.FK_tblProduct_tblProduct">
+            <End Role="tblProduct" EntitySet="tblProduct" />
+            <End Role="tblProduct1" EntitySet="tblProduct" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ECommPracticeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblCategory">
+          <Key>
+            <PropertyRef Name="CatID" />
+          </Key>
+          <Property Name="CatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CatName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tblProducts" Relationship="Self.FK_tblProduct_tblCategory" FromRole="tblCategory" ToRole="tblProduct" />
+        </EntityType>
+        <EntityType Name="tblCompany">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+          </Key>
+          <Property Name="CompanyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tblProducts" Relationship="Self.FK_tblProduct_tblCompany" FromRole="tblCompany" ToRole="tblProduct" />
+        </EntityType>
+        <EntityType Name="tblProduct">
+          <Key>
+            <PropertyRef Name="ProID" />
+          </Key>
+          <Property Name="ProID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProQuantity" Type="Int32" Nullable="false" />
+          <Property Name="ProPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ProImageName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CatID" Type="Int32" Nullable="false" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblCategory" Relationship="Self.FK_tblProduct_tblCategory" FromRole="tblProduct" ToRole="tblCategory" />
+          <NavigationProperty Name="tblCompany" Relationship="Self.FK_tblProduct_tblCompany" FromRole="tblProduct" ToRole="tblCompany" />
+          <NavigationProperty Name="tblMyTemps" Relationship="ECommPracticeModel.FK_tblMyTemp_tblProduct" FromRole="tblProduct" ToRole="tblMyTemp" />
+          <NavigationProperty Name="tblProduct1" Relationship="ECommPracticeModel.FK_tblProduct_tblProduct" FromRole="tblProduct" ToRole="tblProduct1" />
+          <NavigationProperty Name="tblProduct2" Relationship="ECommPracticeModel.FK_tblProduct_tblProduct" FromRole="tblProduct1" ToRole="tblProduct" />
+        </EntityType>
+        <Association Name="FK_tblProduct_tblCategory">
+          <End Role="tblCategory" Type="Self.tblCategory" Multiplicity="1" />
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCategory">
+              <PropertyRef Name="CatID" />
+            </Principal>
+            <Dependent Role="tblProduct">
+              <PropertyRef Name="CatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblProduct_tblCompany">
+          <End Role="tblCompany" Type="Self.tblCompany" Multiplicity="1" />
+          <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCompany">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="tblProduct">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ECommPracticeEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblCategories" EntityType="Self.tblCategory" />
+          <EntitySet Name="tblCompanies" EntityType="Self.tblCompany" />
+          <EntitySet Name="tblProducts" EntityType="Self.tblProduct" />
+          <AssociationSet Name="FK_tblProduct_tblCategory" Association="Self.FK_tblProduct_tblCategory">
+            <End Role="tblCategory" EntitySet="tblCategories" />
+            <End Role="tblProduct" EntitySet="tblProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProduct_tblCompany" Association="Self.FK_tblProduct_tblCompany">
+            <End Role="tblCompany" EntitySet="tblCompanies" />
+            <End Role="tblProduct" EntitySet="tblProducts" />
+          </AssociationSet>
+          <FunctionImport Name="GetCategories" ReturnType="Collection(ECommPracticeModel.GetCategories_Result)" />
+          <FunctionImport Name="GetProducts" ReturnType="Collection(ECommPracticeModel.GetProducts_Result)">
+          <Parameter Name="CategoryId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="tblMyTemps" EntityType="ECommPracticeModel.tblMyTemp" />
+          <FunctionImport Name="GetTempsData" ReturnType="Collection(ECommPracticeModel.GetTempsData_Result)">
+          <Parameter Name="random" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="GetCartedProducts" ReturnType="Collection(ECommPracticeModel.GetCartedProducts_Result)">
+            <Parameter Name="productId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <AssociationSet Name="FK_tblMyTemp_tblProduct" Association="ECommPracticeModel.FK_tblMyTemp_tblProduct">
+            <End Role="tblProduct" EntitySet="tblProducts" />
+            <End Role="tblMyTemp" EntitySet="tblMyTemps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProduct_tblProduct" Association="ECommPracticeModel.FK_tblProduct_tblProduct">
+            <End Role="tblProduct" EntitySet="tblProducts" />
+            <End Role="tblProduct1" EntitySet="tblProducts" />
+          </AssociationSet>
+          <FunctionImport Name="GetCartedProductsList" ReturnType="Collection(ECommPracticeModel.GetCartedProductsList_Result)">
+            <Parameter Name="productId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CartedProducts" ReturnType="Collection(ECommPracticeModel.CartedProducts_Result)">
+          <Parameter Name="uniqueId" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <EntitySet Name="tblOrderDetails" EntityType="ECommPracticeModel.tblOrderDetail" />
+          <EntitySet Name="tblOrderMains" EntityType="ECommPracticeModel.tblOrderMain" />
+          <AssociationSet Name="FK_tblOrderDetail_tblOrderMain" Association="ECommPracticeModel.FK_tblOrderDetail_tblOrderMain">
+            <End Role="tblOrderMain" EntitySet="tblOrderMains" />
+            <End Role="tblOrderDetail" EntitySet="tblOrderDetails" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="GetCategories_Result">
+          <Property Type="Int32" Name="CatID" Nullable="false" />
+          <Property Type="String" Name="CatName" Nullable="false" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetProducts_Result">
+          <Property Type="Int32" Name="ProID" Nullable="false" />
+          <Property Type="String" Name="ProName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ProQuantity" Nullable="false" />
+          <Property Type="Decimal" Name="ProPrice" Nullable="false" Precision="19" />
+          <Property Type="String" Name="ProImageName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="CatID" Nullable="false" />
+          <Property Type="Int32" Name="CompanyID" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="tblMyTemp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Random" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="tblProduct" Relationship="ECommPracticeModel.FK_tblMyTemp_tblProduct" FromRole="tblMyTemp" ToRole="tblProduct" />
+        </EntityType>
+        <ComplexType Name="GetTempsData_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="Int64" Name="Random" Nullable="false" />
+          <Property Type="DateTime" Name="DateTime" Nullable="false" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="GetCartedProducts_Result">
+          <Property Type="Int32" Name="ProID" Nullable="false" />
+          <Property Type="String" Name="ProName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ProQuantity" Nullable="false" />
+          <Property Type="Decimal" Name="ProPrice" Nullable="false" Precision="19" />
+          <Property Type="String" Name="ProImageName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="CatID" Nullable="false" />
+          <Property Type="Int32" Name="CompanyID" Nullable="false" />
+        </ComplexType>
+        <Association Name="FK_tblMyTemp_tblProduct">
+          <End Type="ECommPracticeModel.tblProduct" Role="tblProduct" Multiplicity="1" />
+          <End Type="ECommPracticeModel.tblMyTemp" Role="tblMyTemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblProduct">
+              <PropertyRef Name="ProID" />
+            </Principal>
+            <Dependent Role="tblMyTemp">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblProduct_tblProduct">
+          <End Type="ECommPracticeModel.tblProduct" Role="tblProduct" Multiplicity="1" />
+          <End Type="ECommPracticeModel.tblProduct" Role="tblProduct1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblProduct">
+              <PropertyRef Name="ProID" />
+            </Principal>
+            <Dependent Role="tblProduct1">
+              <PropertyRef Name="ProID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="GetCartedProductsList_Result">
+          <Property Type="Int32" Name="ProID" Nullable="false" />
+          <Property Type="String" Name="ProName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ProQuantity" Nullable="false" />
+          <Property Type="Decimal" Name="ProPrice" Nullable="false" Precision="19" />
+          <Property Type="String" Name="ProImageName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="CatID" Nullable="false" />
+          <Property Type="Int32" Name="CompanyID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="CartedProducts_Result">
+          <Property Type="Int32" Name="ProID" Nullable="false" />
+          <Property Type="String" Name="ProName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ProQuantity" Nullable="false" />
+          <Property Type="Decimal" Name="ProPrice" Nullable="false" Precision="19" />
+          <Property Type="String" Name="ProImageName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="CatID" Nullable="false" />
+          <Property Type="Int32" Name="CompanyID" Nullable="false" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="Int64" Name="Random" Nullable="false" />
+          <Property Type="DateTime" Name="DateTime" Nullable="false" Precision="23" />
+        </ComplexType>
+        <EntityType Name="tblOrderDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ProductPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblOrderMain" Relationship="ECommPracticeModel.FK_tblOrderDetail_tblOrderMain" FromRole="tblOrderDetail" ToRole="tblOrderMain" />
+        </EntityType>
+        <EntityType Name="tblOrderMain">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tblOrderDetails" Relationship="ECommPracticeModel.FK_tblOrderDetail_tblOrderMain" FromRole="tblOrderMain" ToRole="tblOrderDetail" />
+        </EntityType>
+        <Association Name="FK_tblOrderDetail_tblOrderMain">
+          <End Type="ECommPracticeModel.tblOrderMain" Role="tblOrderMain" Multiplicity="1" />
+          <End Type="ECommPracticeModel.tblOrderDetail" Role="tblOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblOrderMain">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="tblOrderDetail">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ECommPracticeModelStoreContainer" CdmEntityContainer="ECommPracticeEntities">
+          <EntitySetMapping Name="tblCategories">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblCategory">
+              <MappingFragment StoreEntitySet="tblCategory">
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="CatName" ColumnName="CatName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblCompanies">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblCompany">
+              <MappingFragment StoreEntitySet="tblCompany">
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblProducts">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblProduct">
+              <MappingFragment StoreEntitySet="tblProduct">
+                <ScalarProperty Name="ProID" ColumnName="ProID" />
+                <ScalarProperty Name="ProName" ColumnName="ProName" />
+                <ScalarProperty Name="ProQuantity" ColumnName="ProQuantity" />
+                <ScalarProperty Name="ProPrice" ColumnName="ProPrice" />
+                <ScalarProperty Name="ProImageName" ColumnName="ProImageName" />
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetCategories" FunctionName="ECommPracticeModel.Store.GetCategories">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ECommPracticeModel.GetCategories_Result">
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="CatName" ColumnName="CatName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetProducts" FunctionName="ECommPracticeModel.Store.GetProducts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ECommPracticeModel.GetProducts_Result">
+                <ScalarProperty Name="ProID" ColumnName="ProID" />
+                <ScalarProperty Name="ProName" ColumnName="ProName" />
+                <ScalarProperty Name="ProQuantity" ColumnName="ProQuantity" />
+                <ScalarProperty Name="ProPrice" ColumnName="ProPrice" />
+                <ScalarProperty Name="ProImageName" ColumnName="ProImageName" />
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tblMyTemps">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblMyTemp">
+              <MappingFragment StoreEntitySet="tblMyTemp">
+                <ScalarProperty Name="Random" ColumnName="Random" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetTempsData" FunctionName="ECommPracticeModel.Store.GetTempsData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ECommPracticeModel.GetTempsData_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="Random" ColumnName="Random" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CartedProducts" FunctionName="ECommPracticeModel.Store.CartedProducts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ECommPracticeModel.CartedProducts_Result">
+                <ScalarProperty Name="ProID" ColumnName="ProID" />
+                <ScalarProperty Name="ProName" ColumnName="ProName" />
+                <ScalarProperty Name="ProQuantity" ColumnName="ProQuantity" />
+                <ScalarProperty Name="ProPrice" ColumnName="ProPrice" />
+                <ScalarProperty Name="ProImageName" ColumnName="ProImageName" />
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="Random" ColumnName="Random" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tblOrderDetails">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblOrderDetail">
+              <MappingFragment StoreEntitySet="tblOrderDetail">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ProductPrice" ColumnName="ProductPrice" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrderMains">
+            <EntityTypeMapping TypeName="ECommPracticeModel.tblOrderMain">
+              <MappingFragment StoreEntitySet="tblOrderMain">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
